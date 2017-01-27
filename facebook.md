@@ -89,6 +89,57 @@ ListNode *mergeKLists(vector<ListNode *> &lists) { //priority_queue
 
 ```
 
+28. Implement strStr()   omn
+
+```cpp
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int cnt1 = haystack.length();
+        int cnt2 = needle.length();
+        if(!cnt2) return 0;
+
+        for(int i = 0 ; i< cnt1-cnt2+1 ; ++i){
+            for(int j = 0; j<cnt2 ; j++){
+                if(haystack[i+j] != needle[j]) break;
+                if(j == cnt2 -1) return i;
+            }
+            
+        }
+        return -1;
+    }
+};
+
+on
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        if(needle.empty()) return 0;
+        if(haystack.empty()) return -1;
+        vector<int> pi(needle.size(), 0);
+        //KMP-algorithm:
+        //Pre-process
+        int k = 0, i;
+        for(i = 1; i < needle.size(); i++) {
+            while(k > 0  && needle[k] != needle[i]) k = pi[k - 1];
+            if(needle[k] == needle[i]) pi[i] = ++k;
+        }
+        k = 0;
+        //Matching
+        for(i = 0; i < haystack.size(); i++) {
+            while(k > 0 && haystack[i] != needle[k]) k = pi[k - 1];
+            if(haystack[i] == needle[k]) k++;
+            if(k == needle.size()) return i - needle.size() + 1;
+        }
+        return -1;
+    }
+};
+
+
+```
+
+
+
 57. Insert Interval
 ```cpp
 vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
@@ -113,53 +164,7 @@ vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
 
 ```
 
-278. bad version ologn o1
 
-```cpp
-
-class Solution {
-public:
-    int firstBadVersion(int n) {
-        int lower = 1, upper = n, mid;
-        while(lower < upper) {
-            mid = lower + (upper - lower) / 2;
-            if(!isBadVersion(mid)) lower = mid + 1;   /* Only one call to API */
-            else upper = mid;
-        }
-        return lower;   /* Because there will alway be a bad version, return lower here */
-    }
-};
-
-```
-
-283. Move Zeros on
-
-```cpp
-class Solution {
-public:
-    /*void moveZeroes(vector<int>& nums) {
-        int zero = 0, walk = 0, N = nums.size();
-        while (walk < N) {
-            if (nums[walk++] != 0) 
-                swap(nums[zero++], nums[walk - 1]);
-        }
-    }
-    */
-    void moveZeroes(vector<int>& nums) {
-        int len = 0;
-        for (int i = 0; i < nums.size(); ++i) {
-            if (nums[i] != 0) {
-                if (nums[len] != nums[i]) {
-                    swap(nums[len], nums[i]);
-                }
-                ++len;
-            }
-        }
-    }
-};
-
-
-```
 
 75. sort color on
 
@@ -298,6 +303,7 @@ struct Solution {
         return a;
     }
 };
+
 78. Subsets
 
 ```cpp
@@ -446,6 +452,25 @@ int numDecodings(string s) {
     return r1;
 }
 ```
+
+98. Validate Binary Search Tree
+
+```cpp
+bool isValidBST(TreeNode* root) {
+    return isValidBST(root, NULL, NULL);
+}
+
+bool isValidBST(TreeNode* root, TreeNode* minNode, TreeNode* maxNode) {
+    if(!root) return true;
+    if(minNode && root->val <= minNode->val || maxNode && root->val >= maxNode->val)
+        return false;
+    return isValidBST(root->left, minNode, root) && isValidBST(root->right, root, maxNode);
+}
+
+```
+
+
+
 
 125. Valid Palindrome
 
@@ -644,7 +669,53 @@ public:
 
 ```
 
+278. bad version ologn o1
 
+```cpp
+
+class Solution {
+public:
+    int firstBadVersion(int n) {
+        int lower = 1, upper = n, mid;
+        while(lower < upper) {
+            mid = lower + (upper - lower) / 2;
+            if(!isBadVersion(mid)) lower = mid + 1;   /* Only one call to API */
+            else upper = mid;
+        }
+        return lower;   /* Because there will alway be a bad version, return lower here */
+    }
+};
+
+```
+
+283. Move Zeros on
+
+```cpp
+class Solution {
+public:
+    /*void moveZeroes(vector<int>& nums) {
+        int zero = 0, walk = 0, N = nums.size();
+        while (walk < N) {
+            if (nums[walk++] != 0) 
+                swap(nums[zero++], nums[walk - 1]);
+        }
+    }
+    */
+    void moveZeroes(vector<int>& nums) {
+        int len = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] != 0) {
+                if (nums[len] != nums[i]) {
+                    swap(nums[len], nums[i]);
+                }
+                ++len;
+            }
+        }
+    }
+};
+
+
+```
 
 
 100000. plus Kth nearest pointer
